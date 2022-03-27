@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.projex.portal.mapper")
+@MapperScan("com.projex.portal.dao")
 public class PortalApplication {
 
     public static void main(String[] args) {

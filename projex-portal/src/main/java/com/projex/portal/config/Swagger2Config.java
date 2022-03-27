@@ -53,7 +53,12 @@ public class Swagger2Config {
 
     private List<SecurityContext> securityContexts() {
         //设置需要登录认证的路径
-        return new ArrayList<>();
+        List<SecurityContext> result = new ArrayList<>();
+        result.add(getContextByPath("/user/getUser"));
+//        result.add(getContextByPath("/cart/.*"));
+//        result.add(getContextByPath("/order/.*"));
+//        result.add(getContextByPath("/returnApply/.*"));
+        return result;
     }
 
     private SecurityContext getContextByPath(String pathRegex) {

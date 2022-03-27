@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.projex.portal.dao.CompanyDao">
+    <select id="selectByCompanyName" resultType="com.projex.portal.vo.Company">
+        select * from company where company_name = #{companyName} and is_delete = 0
+    </select>
+
+    <select id="getCompanyInfoById" resultType="com.projex.portal.vo.Company">
+        select * from company where company_id = #{companyId} and is_delete = 0
+    </select>
+
+    <insert id="insert">
+        insert into company (company_name, company_description, company_owner, is_delete)
+        values (#{name}, #{dsc}, #{owner}, 0)
+    </insert>
+
+    <select id="getCompaniesByUserId" resultType="com.projex.portal.vo.UserCompany">
+        select * from user_company where user_id = #{userId}
+    </select>
+
+    <update id="delCompanyById">
+        UPDATE company set is_delete = 1 where company_id = #{companyId} and company_owner = #{companyOwner} and is_delete = 0
+    </update>
+
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.projex.portal.dao.UserProjDao">
+    <insert id="insert" parameterType="com.projex.portal.vo.UserProj">
+        insert into user_proj (proj_id, user_id, username, add_date)
+        values (#{projId}, #{userId}, #{username}, #{addDate})
+    </insert>
+
+    <select id="getUsersByProjId" resultType="com.projex.portal.vo.UserProj">
+        select * from user_proj where proj_id = #{projId}
+    </select>
+
+    <select id="selectByProjAndUserId" resultType="com.projex.portal.vo.UserProj">
+        select * from user_proj where proj_id = #{projId} and user_id = #{userId}
+    </select>
+</mapper>

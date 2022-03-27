@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.projex.portal.dao.UserDao">
+    <sql id="user">
+        user_id, username, is_delete, recent_company
+    </sql>
+
+    <select id="getUser" resultType="com.projex.portal.vo.User">
+        select * from user where user_id = #{userId} and is_delete = 0
+    </select>
+
+    <select id="getUserByUsername" resultType="com.projex.portal.vo.User">
+        select * from user where username = #{username} and is_delete = 0
+    </select>
+
+    <update id="updateTokenByUserId">
+        UPDATE `user` SET token = #{token} WHERE user_id = #{userId} and is_delete = 0
+    </update>
+
+    <insert id="register">
+        INSERT INTO `user` (username, password) VALUES (#{username}, #{password})
+    </insert>
+
+    <update id="updateRecentCompany">
+        UPDATE `user` SET recent_company = #{companyId} WHERE user_id = #{userId} and is_delete = 0
+    </update>
+
+</mapper>

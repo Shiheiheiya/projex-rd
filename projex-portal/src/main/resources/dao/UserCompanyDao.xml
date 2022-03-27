@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.projex.portal.dao.UserCompanyDao">
+    <insert id="insert" parameterType="com.projex.portal.vo.UserCompany">
+        insert into user_company (user_id, company_id, username, company_name, add_date)
+        values (#{userId}, #{companyId}, #{username}, #{companyName}, #{addDate})
+    </insert>
+
+    <delete id="delByCompanyId">
+        delete from user_company where company_id = #{companyId}
+    </delete>
+
+    <select id="selectByCompanyIdAndUserId" resultType="com.projex.portal.vo.UserCompany">
+        select * from user_company where company_id = #{companyId} and user_id = #{userId}
+    </select>
+
+</mapper>

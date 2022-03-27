@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.projex.portal.dao.WorkitemDao">
+    <select id="getWorkitemListByLabel" resultType="com.projex.portal.vo.Workitem">
+        SELECT * FROM workitem WHERE proj_id = #{projId} AND workitem_label = #{label} AND is_delete = 0
+    </select>
+
+    <insert id="insert">
+        INSERT INTO workitem (workitem_label, workitem_name, workitem_dsc, workitem_status, workitem_level, workitem_director,
+        workitem_creator, workitem_create_time, workitem_estimate_time, scrum_id, proj_id)
+        VALUES (#{label}, #{name}, #{dsc}, #{status}, #{level}, #{director}, #{creator}, #{createTime}, #{estimateTime},
+        #{scrumId}, #{projId})
+    </insert>
+
+    <select id="getWorkitemById" resultType="com.projex.portal.vo.Workitem">
+        SELECT * FROM workitem where workitem_id = #{workitemId} and is_delete = 0
+    </select>
+
+    <update id="updateWorkitemInfo">
+        update workitem set workitem_name = #{name}, workitem_dsc = #{dsc},
+        workitem_status = #{status}, workitem_level = #{level}, workitem_director = #{director},
+        workitem_estimate_time = #{estimateTime}, workitem_true_time = #{trueTime},
+        scrum_id = #{scrumId}, workitem_finish_time = #{finishTime} where workitem_id = #{workitemId}
+    </update>
+
+    <update id="delWorkitemById">
+        update workitem set is_delete = 1 where workitem_id = #{workitemId}
+    </update>
+
+    <select id="getNoFinishNum" resultType="java.lang.Integer">
+        select count(*) from workitem where proj_id = #{projId} and workitem_label = #{label} and workitem_status != "已完成" and is_delete = 0
+    </select>
+</mapper>
