@@ -80,13 +80,13 @@ public class WorkitemService {
      */
     public Boolean updateWorkitemInfo(Integer workitemId, String name, String dsc, String status,
                                      String level, Integer director, Double estimateTime,
-                                     Double trueTime, Integer scrumId){
+                                     Double trueTime, Integer scrumId, Integer projId){
         String finishTime = null;
         if (status.equals("已完成")){
             java.sql.Date now = new java.sql.Date(new Date().getTime());
             finishTime = now.toString();
         }
-        Integer i = workitemDao.updateWorkitemInfo(workitemId, name, dsc, status, level, director, estimateTime, trueTime, scrumId, finishTime);
+        Integer i = workitemDao.updateWorkitemInfo(workitemId, name, dsc, status, level, director, estimateTime, trueTime, scrumId, finishTime, projId);
         return i>0;
     }
 

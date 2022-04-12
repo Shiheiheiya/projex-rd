@@ -20,7 +20,7 @@ public interface WorkitemDao {
 
     Integer updateWorkitemInfo(Integer workitemId, String name, String dsc, String status,
                                String level, Integer director, Double estimateTime,
-                               Double trueTime, Integer scrumId, String finishTime);
+                               Double trueTime, Integer scrumId, String finishTime, Integer projId);
 
     Integer delWorkitemById(Integer workitemId);
 

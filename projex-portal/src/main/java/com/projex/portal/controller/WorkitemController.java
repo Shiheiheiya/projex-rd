@@ -59,8 +59,10 @@ public class WorkitemController {
                                                    @RequestParam String name, @RequestParam String dsc,
                                                    @RequestParam String status, @RequestParam String level,
                                                    @RequestParam Integer director, @RequestParam Double estimateTime,
-                                                   @RequestParam Double trueTime, @RequestParam Integer scrumId){
-        Boolean result = workitemService.updateWorkitemInfo(workitemId, name, dsc, status, level, director, estimateTime, trueTime, scrumId);
+                                                   @RequestParam Double trueTime, @RequestParam Integer scrumId,
+                                                    @RequestParam Integer projId){
+        if (name == null) name = "null";
+        Boolean result = workitemService.updateWorkitemInfo(workitemId, name, dsc, status, level, director, estimateTime, trueTime, scrumId, projId);
         return CommonResult.success(result, "success");
     }
 

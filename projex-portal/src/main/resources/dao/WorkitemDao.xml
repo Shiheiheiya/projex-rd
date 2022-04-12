@@ -22,7 +22,7 @@
         update workitem set workitem_name = #{name}, workitem_dsc = #{dsc},
         workitem_status = #{status}, workitem_level = #{level}, workitem_director = #{director},
         workitem_estimate_time = #{estimateTime}, workitem_true_time = #{trueTime},
-        scrum_id = #{scrumId}, workitem_finish_time = #{finishTime} where workitem_id = #{workitemId}
+        scrum_id = #{scrumId}, workitem_finish_time = #{finishTime}, proj_id = #{projId} where workitem_id = #{workitemId} and is_delete = 0
     </update>
 
     <update id="delWorkitemById">

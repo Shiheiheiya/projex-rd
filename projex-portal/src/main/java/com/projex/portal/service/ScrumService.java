@@ -1,13 +1,13 @@
 package com.projex.portal.service;
 
 import com.projex.portal.dao.ScrumDao;
+import com.projex.portal.utils.DateTools;
 import com.projex.portal.vo.Scrum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Date;
-import java.util.List;
+import java.text.ParseException;
+import java.util.*;
 
 @Service
 public class ScrumService {
@@ -23,7 +23,11 @@ public class ScrumService {
      * @return
      */
     public List<Scrum> getScrumListByProjId(Integer projId){
-        return scrumDao.getScrumListByProjId(projId);
+        List<Scrum> scrumList = scrumDao.getScrumListByProjId(projId);
+        for (Scrum item : scrumList){
+            item.setCreator(userService.getUserById(item.getScrumCreator()));
+        }
+        return scrumList;
     }
 
     /**
@@ -94,5 +98,92 @@ public class ScrumService {
     public Boolean delScrumById(Integer scrumId){
         Integer i = scrumDao.delScrumById(scrumId);
         return i>0;
+    }
+
+    /**
+     * 获取迭代汇总数据
+     * @param scrumId
+     * @return
+     */
+    public Map<String, Object> getScrumSummary(Integer scrumId){
+        Map<String, Object> result = new HashMap<>();
+        Integer totalWorkitem = scrumDao.getTotalWorkitemByScrumId(scrumId);
+        Integer doneWorkitem = scrumDao.getDoneWorkitemByScrumId(scrumId);
+        Double estimateTime = scrumDao.getEstimateTimeByScrumId(scrumId);
+        Double trueTime = scrumDao.getTrueTimeByScrumId(scrumId);
+        result.put("totalWorkitem", totalWorkitem == null ? 0 : totalWorkitem);
+        result.put("doneWorkitem", doneWorkitem == null ? 0 : doneWorkitem);
+        result.put("estimateTime", estimateTime == null ? 0.0 : estimateTime);
+        result.put("trueTime", trueTime == null ? 0.0 : trueTime);
+        return result;
+    }
+
+    /**
+     * 获取燃尽图的数据
+     * @param scrumId
+     * @param label
+     * @return
+     */
+    public Map<String, List<List<Object>>> getBurnDownByLabel(Integer scrumId, String label) throws ParseException {
+        Scrum scrum = scrumDao.getScrumInfoById(scrumId);
+        String startTime = scrum.getScrumStartTime();
+        String endTime = scrum.getScrumEndTime();
+        if (startTime == null || endTime == null) return null;
+        List<String> dateList = DateTools.getDateList(startTime, endTime); // 日期列表
+        List<List<Object>> stock = new ArrayList<>(); // 存量数据
+        List<List<Object>> wish = new ArrayList<>(); // 期望数据
+        Map<String, List<List<Object>>> result = new HashMap<>(); // 返回的结果数据集
+        double firstPoint = 0.0; // 第一天的起始点
+        long days = DateTools.getDiffByDate(startTime, endTime); // 时间区间跨度
+        int i = 0; // 递减天数
+        for (String date : dateList) {
+            Integer count = scrumDao.getNoFinishCountByDate(scrumId, label, date);
+            // 处理存量数据
+            List<Object> item = new ArrayList<>();
+            item.add(date);
+            item.add(count);
+            stock.add(item);
+            // 处理期望数据
+            List<Object> item1 = new ArrayList<>();
+            item1.add(date);
+            if (date.equals(startTime)){ // 如果是第一天，加入期望值
+                item1.add(count);
+                firstPoint = count*1.0;
+            }else if(date.equals(endTime)){ // 如果是最后一天，期望置0
+                item1.add(0);
+            }else { // 区间内的每日递减
+                i++;
+                item1.add(firstPoint - firstPoint / days * i);
+            }
+            wish.add(item1);
+        }
+        result.put("stock", stock);
+        result.put("wish", wish);
+        return result;
+    }
+
+    /**
+     * 工作项趋势图
+     * @param scrumId
+     * @param label
+     * @return
+     */
+    public Map<String, List<?>> getWorkitemChangeByLabel(Integer scrumId, String label) throws ParseException {
+        Scrum scrum = scrumDao.getScrumInfoById(scrumId);
+        String startTime = scrum.getScrumStartTime();
+        String endTime = scrum.getScrumEndTime();
+        if (startTime == null || endTime == null) return null;
+        Map<String, List<?>> result = new HashMap<>();
+        List<String> dateList = DateTools.getDateList(startTime, endTime);
+        List<Integer> createList = new ArrayList<>();
+        List<Integer> finishList = new ArrayList<>();
+        for (String date : dateList){
+            createList.add(scrumDao.getCreateCountByDate(scrumId, label, date));
+            finishList.add(scrumDao.getFinishCountByDate(scrumId, label, date));
+        }
+        result.put("dateList", dateList);
+        result.put("createList", createList);
+        result.put("finishList", finishList);
+        return result;
     }
 }

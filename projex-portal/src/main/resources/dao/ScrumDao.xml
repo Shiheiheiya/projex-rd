@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.projex.portal.dao.ScrumDao">
     <select id="getScrumListByProjId" resultType="com.projex.portal.vo.Scrum">
-        select * from scrum where proj_id = #{projId}
+        select * from scrum where proj_id = #{projId} and is_delete = 0
     </select>
 
     <insert id="insertScrum">
@@ -15,11 +15,11 @@
     </insert>
 
     <select id="getScrumInfoByName" resultType="com.projex.portal.vo.Scrum">
-        select * from scrum where scrum_name = #{scrumName}
+        select * from scrum where scrum_name = #{scrumName} and is_delete = 0
     </select>
 
     <select id="getScrumInfoById" resultType="com.projex.portal.vo.Scrum">
-        select * from scrum where scrum_id = #{scrumId}
+        select * from scrum where scrum_id = #{scrumId} and is_delete = 0
     </select>
 
     <update id="updateScrumInfo">
@@ -31,5 +31,36 @@
     <update id="delScrumById">
         update scrum set is_delete = 1 where scrum_id = #{scrumId}
     </update>
+
+    <select id="getTotalWorkitemByScrumId" resultType="java.lang.Integer">
+        select count(*) from workitem where scrum_id = #{scrumId} and is_delete = 0
+    </select>
+
+    <select id="getDoneWorkitemByScrumId" resultType="java.lang.Integer">
+        select count(*) from workitem where scrum_id = #{scrumId} and workitem_status = '已完成' and is_delete = 0
+    </select>
+
+    <select id="getEstimateTimeByScrumId" resultType="java.lang.Double">
+        select sum(workitem_estimate_time) from workitem where scrum_id = #{scrumId} and is_delete = 0
+    </select>
+
+    <select id="getTrueTimeByScrumId" resultType="java.lang.Double">
+        select sum(workitem_true_time) from workitem where scrum_id = #{scrumId} and is_delete = 0
+    </select>
+
+    <select id="getNoFinishCountByDate" resultType="java.lang.Integer">
+        SELECT count(*) from workitem
+        WHERE scrum_id = #{scrumId} and workitem_label = #{label} and ( workitem_finish_time > #{date} or workitem_status != '已完成') and is_delete = 0
+    </select>
+
+    <select id="getCreateCountByDate" resultType="java.lang.Integer">
+        SELECT count(*) from workitem
+        WHERE scrum_id = #{scrumId} and workitem_label = #{label} and workitem_create_time = #{date} and is_delete = 0
+    </select>
+
+    <select id="getFinishCountByDate" resultType="java.lang.Integer">
+        SELECT count(*) from workitem
+        WHERE scrum_id = #{scrumId} and workitem_label = #{label} and workitem_finish_time = #{date} and is_delete = 0
+    </select>
 
 </mapper>

@@ -10,7 +10,9 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/scrum")
@@ -67,5 +69,43 @@ public class ScrumController {
     public CommonResult<Boolean> delScrumById(@RequestParam Integer scrumId){
         Boolean result = scrumService.delScrumById(scrumId);
         return CommonResult.success(result);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/getScrumSummary")
+    @ApiOperation("获取迭代汇总数据")
+    public CommonResult<Map<String, Object>> getScrumSummary(@RequestParam Integer scrumId){
+        Map<String, Object> scrumSummary = scrumService.getScrumSummary(scrumId);
+        return CommonResult.success(scrumSummary, "success");
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/getBurnDownByLabel")
+    @ApiOperation("获取燃尽图数据")
+    public CommonResult<Map<String, List<List<Object>>>> getBurnDownByLabel(@RequestParam Integer scrumId,
+                                                                @RequestParam String label){
+        try {
+            Map<String, List<List<Object>>> result = scrumService.getBurnDownByLabel(scrumId, label);
+            if (result == null) return CommonResult.failed("false");
+            return CommonResult.success(result, "success");
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return CommonResult.failed("false");
+        }
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/getWorkitemChangeByLabel")
+    @ApiOperation("获取工作项趋势图数据")
+    public CommonResult<Map<String, List<?>>> getWorkitemChangeByLabel(@RequestParam Integer scrumId,
+                                                                            @RequestParam String label){
+        try {
+            Map<String, List<?>> result = scrumService.getWorkitemChangeByLabel(scrumId, label);
+            if (result == null) return CommonResult.failed("false");
+            return CommonResult.success(result, "success");
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return CommonResult.failed("false");
+        }
     }
 }

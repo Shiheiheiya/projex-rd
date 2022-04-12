@@ -11,15 +11,15 @@
     </insert>
 
     <select id="getProjectByName" resultType="com.projex.portal.vo.Project">
-        select * from project where proj_name = #{projName}
+        select * from project where proj_name = #{projName} and is_delete = 0
     </select>
 
     <select id="getProjInfoById" resultType="com.projex.portal.vo.Project">
-        select * from project where proj_id = #{projId}
+        select * from project where proj_id = #{projId} and is_delete = 0
     </select>
 
     <select id="getAllProjList" resultType="com.projex.portal.vo.Project">
-        select * from project where company_id = #{companyId};
+        select * from project where company_id = #{companyId} and is_delete = 0
     </select>
 
     <select id="getMyAddProjList" resultType="com.projex.portal.vo.Project">
@@ -33,6 +33,6 @@
     </select>
 
     <update id="updateProjNews">
-        update project set proj_news = #{projNews} where proj_id = #{projId}
+        update project set proj_news = #{projNews} where proj_id = #{projId} and is_delete = 0
     </update>
 </mapper>
